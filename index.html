@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Canvas</title>
+    <style>
+        body {
+            overflow: hidden;
+        }
+    </style>
+
+    <script type="text/javascript">
+        let width = 640;
+        let height = 480;
+
+
+        function main() {
+            timerID = setTimeout(tick, 33);
+        }
+
+        function tick() {
+            update();
+            drawCanvas();
+            timerID = setTimeout(tick, 33);
+        }
+
+
+        function update() {
+            canvas = document.getElementById("canv");
+            canvas.style.width = width + "px"
+            canvas.style.height = height + "px"
+            canvas.width = width;
+            canvas.height = height;
+        }
+
+        function drawCanvas() {
+            var ctx = canvas.getContext("2d");
+
+            ctx.fillStyle = "yellow";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            let positivePercent = .0882;
+
+            ctx.fillStyle = "green";
+            let positiveEdge = canvas.width * positivePercent;
+            let negativeWidth = canvas.width - positiveEdge;
+            ctx.fillRect(0, 0, positiveEdge, canvas.height);
+
+            ctx.strokeStyle = "white";
+            //centerText(ctx, 'Positive', positiveEdge / 2, canvas.height / 2);
+
+            ctx.fillStyle = "red"
+            ctx.fillRect(positiveEdge, 0, canvas.width - positiveEdge, canvas.height);
+            //centerText(ctx, 'Negative', positiveEdge + negativeWidth / 2, canvas.height / 2);
+
+            // Flow Chart specific
+            let y1 = 0;
+            let y2 = 0;
+            ctx.fillStyle = "rgba(255, 255, 255, .5)"
+
+            let total = 986
+            let positive = 87;
+            let negative = 899;
+
+            ctx.font = "15px Arial";
+
+            let flowTruePositive = 7/positive * canvas.height;
+            ctx.fillRect(0, y1, positiveEdge, flowTruePositive);
+            centerText(ctx, 'Flow TP', positiveEdge / 2, y1 + flowTruePositive / 2);
+
+            let flowTrueNegative = 146/negative * canvas.height;
+            ctx.fillRect(positiveEdge, y2, negativeWidth, flowTrueNegative);
+            centerText(ctx, 'Flow TN', positiveEdge + negativeWidth / 2, y2 + flowTrueNegative / 2);
+
+            y1 += flowTruePositive;
+            y2 += flowTrueNegative;
+
+            //Combined failed
+            ctx.fillStyle = "rgba(255, 0, 255, .5)";
+            let bothFalseNegative = 2/positive * canvas.height;
+            ctx.fillRect(0, y1, positiveEdge,bothFalseNegative);
+            centerText(ctx, 'Both FN', positiveEdge / 2, y1 + bothFalseNegative / 2);
+
+            let bothFalsePositive = 181/negative * canvas.height;
+            ctx.fillRect(positiveEdge, y2, negativeWidth, bothFalsePositive);
+            centerText(ctx, 'Both FP', positiveEdge + negativeWidth / 2, y2 + bothFalsePositive / 2);
+
+            y1 += bothFalseNegative;
+            y2 += bothFalsePositive;
+
+            //Combined right
+            ctx.fillStyle = "rgba(0, 255, 255, .5)";
+            let bothTruePositive = 40/positive * canvas.height;
+            ctx.fillRect(0, y1, positiveEdge, bothTruePositive);
+            centerText(ctx, 'Both TP', positiveEdge / 2, y1 + flowTruePositive + bothTruePositive / 2);
+
+            let bothTrueNegative = 207/negative * canvas.height;
+            ctx.fillRect(positiveEdge, y2, negativeWidth, bothTrueNegative);
+            centerText(ctx, 'Both TN', positiveEdge + negativeWidth / 2, y2 + bothTrueNegative / 2);
+
+            y1 += bothTruePositive;
+            y2 += bothTrueNegative
+
+            //Combined right
+            ctx.fillStyle = "rgba(255, 255, 0, .5)";
+            let forrestTruePositive = 38/positive * canvas.height;
+            ctx.fillRect(0, y1, positiveEdge, forrestTruePositive);
+            centerText(ctx, 'RF TP', positiveEdge / 2, y1 + flowTruePositive + forrestTruePositive / 2);
+
+            let forestTrueNegative = 365/negative * canvas.height;
+            ctx.fillRect(positiveEdge, y2, negativeWidth, forestTrueNegative);
+            centerText(ctx, 'RF TN', positiveEdge + negativeWidth / 2, y2 + forestTrueNegative / 2);
+
+
+
+
+
+
+
+
+
+
+
+        }
+
+        function centerText(c, text, x, y) {
+            let oldFillStyle = c.fillStyle;
+            c.fillStyle = "white";
+            let metrics = c.measureText(text);
+            let h = (metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent);
+            c.fillText(text, x - metrics.width / 2, y - h / 2);
+            c.fillStyle = oldFillStyle;
+        }
+    </script>
+</head>
+
+<body onload="main()">
+    <canvas id="canv"></canvas>
+</body>
+
+</html>
